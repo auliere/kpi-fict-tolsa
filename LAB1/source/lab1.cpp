@@ -10,6 +10,7 @@
 
 #include "iostream"
 #include "string"
+#include "cstdlib"
 
 using namespace std;
 
@@ -69,5 +70,6 @@ int main(int argc, char** argv)
 			cout << "This word does not exist in given language" << endl;
 		}
 	}
+	system("pause");
 	return 0;
 }
