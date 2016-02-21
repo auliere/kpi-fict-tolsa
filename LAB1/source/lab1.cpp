@@ -29,10 +29,18 @@ void printHelp(string programName)
 	cout << endl;
 	cout << "Example:\n" << programName << " AAAABBBCC\n";
 	cout << endl;
-	cout << "Output: \nAAAABBBBCC\nThis word does not exist in given language\n";
+	cout << "Output: \nAAAABBBBCC\nThis word exists in given language\n";
 	cout << endl;	
 }
 
+/**
+	matchGrammar
+	Parameters:
+		string s: a string that contains a word or sentence to be checked
+	Result: 
+		bool: false if word s is not a legal word in the grammar G, true 
+				otherwise.
+*/
 bool matchGrammar(string s)
 {
 	int n[] = {0, 0, 0};
@@ -44,11 +52,6 @@ bool matchGrammar(string s)
 	}
 	return ((n[0] == (n[1] + 1)) && (n[1] == (n[2] + 1)))
 			|| (s == "A");
-}
-
-string getTestString()
-{
-	return "AAABBC";
 }
 
 int main(int argc, char** argv)
