@@ -1,10 +1,10 @@
 /**
 ==============   TOLSA   ===================
 ===============  LAB 1  ====================
-=== L(G) = {Ä, ÄÄÅ, ÄÄÄÅÅÇ, ÄÄÄÄÅÅÅÇÇ,...} =
+=== L(G) = {A, AAB, AAABBC, AAAABBBCC, ..} =
 ====== Author: Oleg Pedorenko, IP-31 =======
 ============= FICT, ASOIU ==================
-========== Created on: 20.02.===============
+========== Created on: 20.02.2016 ==========
 ============================================
 */
 
@@ -13,15 +13,36 @@
 
 using namespace std;
 
+void printHelp(string programName)
+{
+	cout << "=============   TOLSA   ====================\n" <<
+			"===============  LAB 1  ====================\n" << 
+			"=== L(G) = {A, AAB, AAABBC, AAAABBBCC, ..} =\n" <<
+			"====== Author: Oleg Pedorenko, IP-31 =======\n" <<
+			"============= FICT, ASOIU ==================\n" <<
+			"========== Created on: 20.02.2016 ==========\n" <<
+			"============================================\n";
+	cout << endl;
+	cout << "Pass words as command line arguments to this program to check \n" << 
+			"whether these words exist in a given language L(G)\n";
+	cout << endl;
+	cout << "Example:\n" << programName << " AAAABBBCC\n";
+	cout << endl;
+	cout << "Output: \nAAAABBBBCC\nThis word does not exist in given language\n";
+	cout << endl;	
+}
+
 bool matchGrammar(string s)
 {
-	int k = 0, l = 0, m = 0, i = 0;
-	char a = 'A', b = 'B', c = 'C';
-	for(i; s[i] == a && i < s.length(); i++, k++);
-	for(i; s[i] == b && i < s.length(); i++, l++);
-	for(i; s[i] == c && i < s.length(); i++, m++);
-	//cout << k << " " << l  << " " << m << " " << s << endl;
-	return ((k == l + 1) && (l == m + 1)) || (s == "A");
+	int n[] = {0, 0, 0};
+	char a[] = {'A', 'B', 'C'};
+	int i = 0;
+	for(int j = 0; j < 3; j++)
+	{
+		for(i; s[i] == a[j] && i < s.length(); i++, n[j]++);
+	}
+	return ((n[0] == (n[1] + 1)) && (n[1] == (n[2] + 1)))
+			|| (s == "A");
 }
 
 string getTestString()
@@ -31,14 +52,20 @@ string getTestString()
 
 int main(int argc, char** argv)
 {
-//	cout << argc << endl;
+	if(argc == 1) 
+	{
+		printHelp(argv[0]);
+	}
 	for(int i = 1; i < argc; i++)
 	{
-		cout << string(argv[i]) << endl;
-		if(matchGrammar(string(argv[i]))) {
+		string expression = string(argv[i]);
+		cout << expression << endl;
+		if(matchGrammar(expression)) 
+		{
 			cout << "This word exists in given language" << endl;
 		}
-		else {
+		else 
+		{
 			cout << "This word does not exist in given language" << endl;
 		}
 	}
