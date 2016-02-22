@@ -41,6 +41,21 @@ vector<string>* loadFile(string fileName)
 	{
 		return NULL;
 	}
+	vector<string>* stringVector = new vector<string>();
+	do
+	{
+		stringVector->push_back("");
+		getline(inputFile, stringVector->back());
+	} while (inputFile.good());
+	return stringVector;
+}
+
+void printStringVector(vector<string>* stringVector, ostream& os = cout)
+{
+	for(string& s: *stringVector)
+	{
+		os << s << endl;
+	}
 }
 
 int main(int argc, char** argv)
@@ -51,9 +66,14 @@ int main(int argc, char** argv)
 	}
 	else if(argc == 2)
 	{
-		if(loadFile("abc") == NULL) 
+		vector<string>* lines = loadFile(argv[1]);
+		if(lines == NULL) 
 		{
-			cout << "i/o error";
+			cout << "i/o error\n";
+		}
+		else 
+		{
+			printStringVector(lines);
 		}
 	}
 	else if(argc > 2)
