@@ -9,8 +9,11 @@
 */
 
 #include "iostream"
+#include "fstream"
 #include "string"
+#include "vector"
 
+using namespace std;
 
 void printHelp(string exeName)
 {
@@ -25,13 +28,36 @@ void printHelp(string exeName)
 	cout << "Pass the path to the file with a list of lines to\n" <<
 			"analyze as a command line argument\n";
 	cout << endl;
-	cout << "Example:\n" << programName << " sample.pas\n";
+	cout << "Example:\n" << exeName << " sample.pas\n";
 	cout << endl;
 	cout << "Output: \nAAAABBBBCC\nThis word exists in given language\n";
 	cout << endl;	
 }
 
+vector<string>* loadFile(string fileName)
+{
+	ifstream inputFile(fileName.c_str());
+	if(!inputFile.good())
+	{
+		return NULL;
+	}
+}
+
 int main(int argc, char** argv)
 {
-	
+	if(argc == 1) 
+	{
+		printHelp(argv[0]);
+	}
+	else if(argc == 2)
+	{
+		if(loadFile("abc") == NULL) 
+		{
+			cout << "i/o error";
+		}
+	}
+	else if(argc > 2)
+	{
+		cout << "Too many arguments";
+	}
 }
