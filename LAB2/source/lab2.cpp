@@ -81,12 +81,28 @@ int orderValue(char a)
 
 bool precedence(char a, char b)
 {
+	if(a == '(')
+	{
+		return false;
+	}
+	if((b == '(') && (a != ')'))
+	{
+		return false;
+	}
+	if((a != '(') && (b == ')'))
+	{
+		return true;
+	}
+	if((a == '(') && (b == ')'))
+	{
+		return false;
+	}
 	return orderValue(a) >= orderValue(b);
 }
 
 bool isOperation(char a)
 {
-	return orderValue(a) >= 0;
+	return (orderValue(a) >= 0) || (a == '(') || (a == ')');
 }
 
 string infixToPostfix(string s)
@@ -107,7 +123,15 @@ string infixToPostfix(string s)
 				postfix += smbtop;
 				opstk.pop();
 			}
-			opstk.push(c);
+			if((opstk.empty()) || (c != ')'))
+			{
+				opstk.push(c);
+			}
+			else 
+			{
+				smbtop = opstk.top();
+				opstk.pop();
+			}
 		}
 		else
 		{
