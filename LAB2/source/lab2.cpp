@@ -63,15 +63,15 @@ int orderValue(char a)
 {
 	switch(a)
 	{
+		case '=':
+			return 0;
+			break;		
 		case '+':
 		case '-':
-			return 0;
+			return 1;
 			break;
 		case '*':
 		case '/':
-			return 1;
-			break;
-		case '=':
 			return 2;
 			break;
 		default:
@@ -95,26 +95,31 @@ string infixToPostfix(string s)
 	stack<char> opstk;
 	for(char c: s)
 	{
+		if(c == ' ')
+		{
+			continue;
+		}
 		if(isOperation(c))
 		{
 			char smbtop;
 			while(!opstk.empty() && precedence(smbtop = opstk.top(), c))
 			{
-				postfix.append(smbtop+"");
+				postfix += smbtop;
 				opstk.pop();
 			}
 			opstk.push(c);
 		}
 		else
 		{
-			postfix.append(c+"");
+			postfix += c;
 		}
 	}
 	while(!opstk.empty())
 	{
-		postfix.append(opstk.top()+"");
+		postfix += opstk.top();
 		opstk.pop();
 	}	
+	return postfix;
 }
 
 vector<string>* stringVectorInfixToPostfix(vector<string>* stringVector)
@@ -129,7 +134,7 @@ vector<string>* stringVectorInfixToPostfix(vector<string>* stringVector)
 
 int main(int argc, char** argv)
 {
- 	if(argc == 1) 
+  	if(argc == 1) 
 	{
 		printHelp(argv[0]);
 	}
