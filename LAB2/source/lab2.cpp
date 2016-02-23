@@ -164,29 +164,21 @@ int main(int argc, char** argv)
 	{
 		printHelp(argv[0]);
 	}
-	else if(argc == 2)
+	if(argc == 2 || argc == 3)
 	{
 		vector<string>* lines = loadFile(argv[1]);
+		ostream* os;
+		if(argc == 2)
+			os = &cout;
+		if(argc == 3)
+			os = new ofstream(argv[2]);
 		if(lines == NULL) 
 		{
 			cout << "i/o error\n";
 		}
 		else 
 		{
-			printStringVector(stringVectorInfixToPostfix(lines));
-		}
-	}
-	else if (argc == 3)
-	{
-		vector<string>* lines = loadFile(argv[1]);
-		ofstream os(argv[2]);
-		if(lines == NULL) 
-		{
-			cout << "i/o error\n";
-		}
-		else 
-		{
-			printStringVector(stringVectorInfixToPostfix(lines), os);
+			printStringVector(stringVectorInfixToPostfix(lines), *os);
 		}
 	}
 	else if(argc > 3)
