@@ -12,6 +12,7 @@
 #include "fstream"
 #include "string"
 #include "vector"
+#include "stack"
 
 using namespace std;
 
@@ -73,12 +74,57 @@ int orderValue(char a)
 		case '=':
 			return 2;
 			break;
+		default:
+			return -1;
 	}
 }
 
 bool precedence(char a, char b)
 {
 	return orderValue(a) >= orderValue(b);
+}
+
+bool isOperation(char a)
+{
+	return orderValue(a) >= 0;
+}
+
+string infixToPostfix(string s)
+{
+	string postfix = "";
+	stack<char> opstk;
+	for(char c: s)
+	{
+		if(isOperation(c))
+		{
+			char smbtop;
+			while(!opstk.empty() && precedence(smbtop = opstk.top(), c))
+			{
+				postfix.append(smbtop);
+				opstk.pop()
+			}
+			opstk.push(c);
+		}
+		else
+		{
+			postfix.append(c);
+		}
+	}
+	while(!opstk.empty())
+	{
+		postfix.append(opstk.top());
+		opstk.pop();
+	}	
+}
+
+vector<string>* stringVectorInfixToPostfix(vector<string>* stringVector)
+{
+	vector<string>* result = new vector<string>();
+	for(string& s: *stringVector)
+	{
+		result->push_back(infixToPostfix(s));
+	}
+	return result;
 }
 
 int main(int argc, char** argv)
@@ -96,7 +142,7 @@ int main(int argc, char** argv)
 		}
 		else 
 		{
-			printStringVector(lines);
+			printStringVector(stringVectorInfixToPostfix(lines));
 		}
 	}
 	else if(argc > 2)
