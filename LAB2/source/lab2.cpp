@@ -28,6 +28,8 @@ void printHelp(string exeName)
 	cout << endl;
 	cout << "Pass the path to the file with a list of lines to\n" <<
 			"analyze as a command line argument\n";
+	cout << "Pass the name of the file where you want to direct the output as\n" <<
+			"the second argument";
 	cout << endl;
 	cout << "Example:\n" << exeName << " sample.pas\n";
 	cout << endl;
@@ -174,7 +176,20 @@ int main(int argc, char** argv)
 			printStringVector(stringVectorInfixToPostfix(lines));
 		}
 	}
-	else if(argc > 2)
+	else if (argc == 3)
+	{
+		vector<string>* lines = loadFile(argv[1]);
+		ofstream os(argv[2]);
+		if(lines == NULL) 
+		{
+			cout << "i/o error\n";
+		}
+		else 
+		{
+			printStringVector(stringVectorInfixToPostfix(lines), os);
+		}
+	}
+	else if(argc > 3)
 	{
 		cout << "Too many arguments";
 	} 
