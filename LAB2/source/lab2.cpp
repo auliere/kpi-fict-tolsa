@@ -100,19 +100,19 @@ string infixToPostfix(string s)
 			char smbtop;
 			while(!opstk.empty() && precedence(smbtop = opstk.top(), c))
 			{
-				postfix.append(smbtop);
-				opstk.pop()
+				postfix.append(smbtop+"");
+				opstk.pop();
 			}
 			opstk.push(c);
 		}
 		else
 		{
-			postfix.append(c);
+			postfix.append(c+"");
 		}
 	}
 	while(!opstk.empty())
 	{
-		postfix.append(opstk.top());
+		postfix.append(opstk.top()+"");
 		opstk.pop();
 	}	
 }
