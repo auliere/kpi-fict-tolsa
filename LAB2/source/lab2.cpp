@@ -58,9 +58,32 @@ void printStringVector(vector<string>* stringVector, ostream& os = cout)
 	}
 }
 
+int orderValue(char a)
+{
+	switch(a)
+	{
+		case '+':
+		case '-':
+			return 0;
+			break;
+		case '*':
+		case '/':
+			return 1;
+			break;
+		case '=':
+			return 2;
+			break;
+	}
+}
+
+bool precedence(char a, char b)
+{
+	return orderValue(a) >= orderValue(b);
+}
+
 int main(int argc, char** argv)
 {
-	if(argc == 1) 
+ 	if(argc == 1) 
 	{
 		printHelp(argv[0]);
 	}
@@ -79,5 +102,5 @@ int main(int argc, char** argv)
 	else if(argc > 2)
 	{
 		cout << "Too many arguments";
-	}
+	} 
 }
