@@ -1,6 +1,7 @@
 import graphviz as gv
 import functools
 import argparse
+import copy
 
 graph = functools.partial(gv.Graph, format='svg')
 digraph = functools.partial(gv.Digraph, format='svg')
@@ -62,8 +63,9 @@ class Grammar:
             self.T |= {"`"}
         self.N = set(N)
         self.P = parse_rules(P)
-        self.S = S
-            
+        self.S = S 
+        self.type = "undefined"
+        
     def is_terminal(self, letter):
         return letter in self.T
         
@@ -79,6 +81,23 @@ class Grammar:
         return (self.is_terminal(line[1]) and 
                 self.is_nonterminal(line[0]) and 
                 len(line) == 2)    
+                
+    def add_rule(self, left, right):
+    #TODO: Use exceptions instead of returning bool
+        if ((self.type == "undefined") or
+            (not self.is_nonterminal(left))):
+            return False
+        if((len(right) == 1)):
+            if (self.is_terminal(right)):
+                self.P[left].append(right)
+                return True
+            else:
+                return False
+        if (not ((self.type == 'right' and self.is_rightRG(right)) or
+            (self.type == 'left' and self.is_leftRG(right)))):
+            return False      
+        self.P[left].append(right)
+        return True
     
     def is_regular(self, verbose=False):
         """
@@ -122,11 +141,13 @@ class Grammar:
                         wrong_rule = left_side + " -> " + right_side
                         regular = False
                 if rightRG:
+                    self.type = "right"
                     if not self.is_rightRG(right_side):
                         reason += ("\tInvalid order for right RG\n")
                         wrong_rule = left_side + " -> " + right_side
                         regular = False
                 if leftRG:
+                    self.type = "left"
                     if not self.is_leftRG(right_side):
                         reason += ("\tInvalid order for left RG\n")
                         wrong_rule = left_side + " -> " + right_side
@@ -134,7 +155,8 @@ class Grammar:
             if not regular:
                 break
         if regular and verbose:
-            print str(self) + "\nThe above grammar is a regular grammar"
+            print (str(self) + "\nThe above grammar is a " + 
+                self.type + " regular grammar")
         if not regular and verbose:
             print str(self) + "\nThe above grammar is not a regular grammar"
             print wrong_rule 
@@ -181,4 +203,8 @@ parser.add_argument("-S", required=True,
 args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
-print g.is_regular(verbose)
+g.is_regular(False)
+g2 = copy.deepcopy(g)
+g2.add_rule("S", "b")
+print g
+print g2
