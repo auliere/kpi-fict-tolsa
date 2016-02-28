@@ -158,13 +158,13 @@ class Grammar:
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.')
 parser.add_argument("-T", nargs='+', required=True, 
-                    help='List of terminals of a grammar');
+                    help='List of terminals of a grammar')
 parser.add_argument("-N", nargs='+', required=True, 
-                    help='List of non-terminals of a grammar');
+                    help='List of non-terminals of a grammar')
 parser.add_argument("-P", nargs='+', required=True,
-                    help='Rules of production for grammar');
+                    help='Rules of production for grammar')
 parser.add_argument("-S", required=True,
-                    help='Starting symbol of a grammar');
+                    help='Starting symbol of a grammar')
 
 args = parser.parse_args()
 
