@@ -8,7 +8,7 @@ digraph = functools.partial(gv.Digraph, format='svg')
 def add_nodes(graph, nodes):
     """
     Adds nodes to a graph and returns a graph
-    Taken from http://matthiaseisen.com/articles/graphviz/
+    Taken from http://goo.gl/TZ9dol
     """
     for n in nodes:
         if isinstance(n, tuple):
@@ -20,7 +20,7 @@ def add_nodes(graph, nodes):
 def add_edges(graph, edges):
     """
     Adds edges to a graph and returns a graph
-    Taken from http://matthiaseisen.com/articles/graphviz/
+    Taken from http://goo.gl/TZ9dol
     """
     for e in edges:
         if isinstance(e[0], tuple):
@@ -56,20 +56,20 @@ def parse_rules(rules):
 class Grammar:
     """Class that holds a grammar"""
     def __init__(self, T, N, P, S):
-        self.T = T
-        self.N = N
+        self.T = set(T)
+        self.N = set(N)
         self.P = parse_rules(P)
         self.S = S
-    
+        
     def __repr__(self):
         Ts = '('
-        for item in self.T[:-1]:
+        for item in self.T:
             Ts += item + ', '
-        Ts += self.T[-1] + ')'
+        Ts = Ts[:-2] + ')'
         Ns = '('
-        for item in self.N[:-1]:
+        for item in self.N:
             Ns += item + ', '
-        Ns += self.N[-1] + ')'
+        Ns = Ns[:-2] + ')'
         Ps = 'P0..P' + str(len(self.P)-1)
         Pns = ''
         i = 0
