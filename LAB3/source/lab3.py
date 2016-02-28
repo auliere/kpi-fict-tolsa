@@ -4,6 +4,7 @@ import argparse
 
 graph = functools.partial(gv.Graph, format='svg')
 digraph = functools.partial(gv.Digraph, format='svg')
+empty_string = "`"
 
 def add_nodes(graph, nodes):
     """
@@ -34,7 +35,8 @@ def parse_rule(rule):
     Parse a grammar rule and return a tuple: 
     a starting symbol and a list of end symbols
     """
-    rule = "".join(rule.split())    
+    rule = "".join(rule.split())
+    rule = rule.replace("||", "|"+empty_string)
     L, R = rule.split('->') 
     return L, R.split('|')
 	
@@ -54,7 +56,7 @@ def parse_rules(rules):
 class Grammar:
     """Class that holds a grammar"""
     def __init__(self, T, N, P, S):
-        self.T = set(T)
+        self.T = set(T) | {empty_string}
         self.N = set(N)
         self.P = parse_rules(P)
         self.S = S
@@ -156,7 +158,10 @@ class Grammar:
     
        
 parser = argparse.ArgumentParser(
-                    description = 'Build an automaton for regular grammar.')
+                    description = 'Build an automaton for regular grammar.' + 
+                        '\nA backquoute ` represents an empty string')
+parser.add_argument("--verbose", '-v', action = 'store_true',
+                    help='Enable verbose output')                    
 parser.add_argument("-T", nargs='+', required=True, 
                     help='List of terminals of a grammar')
 parser.add_argument("-N", nargs='+', required=True, 
@@ -167,6 +172,6 @@ parser.add_argument("-S", required=True,
                     help='Starting symbol of a grammar')
 
 args = parser.parse_args()
-
+verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
-g.is_regular(verbose=True)
+g.is_regular(verbose)
