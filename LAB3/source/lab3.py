@@ -56,7 +56,10 @@ def parse_rules(rules):
 class Grammar:
     """Class that holds a grammar"""
     def __init__(self, T, N, P, S):
-        self.T = set(T) | {empty_string}
+        self.T = set(T)
+        if "\\e" in self.T:
+            self.T -= {"\\e"}
+            self.T |= {"`"}
         self.N = set(N)
         self.P = parse_rules(P)
         self.S = S
@@ -96,18 +99,16 @@ class Grammar:
             right_sides = self.P[left_side]
             for right_side in right_sides:
                 if not regular:
-                    if verbose:
-                        print ("Wrong rule: " + wrong_rule + 
-                            "\n" + reason[:-1])
-                    return False                
+                    break;                
                 if len(right_side) > 2:
                     reason += ("\tMore than two symbols in the" + 
                         " right side of the rule\n")
                     wrong_rule = left_side + " -> " + right_side
                     regular = False
                 if len(right_side) == 1:
-                    if self.is_nonterminal(right_side[0]):
-                        reason += ("\tUnexpected nonterminal in the right " +
+                    if (self.is_nonterminal(right_side[0]) or 
+                        not self.is_terminal(right_side[0])):
+                        reason += ("\tUnexpected symbol in the right " +
                             "side of the rule\n")
                         wrong_rule = left_side + " -> " + right_side
                         regular = False
@@ -130,8 +131,14 @@ class Grammar:
                         reason += ("\tInvalid order for left RG\n")
                         wrong_rule = left_side + " -> " + right_side
                         regular = False
+            if not regular:
+                break
         if regular and verbose:
             print str(self) + "\nThe above grammar is a regular grammar"
+        if not regular and verbose:
+            print str(self) + "\nThe above grammar is not a regular grammar"
+            print wrong_rule 
+            print reason[:-1]
         return regular
     
     def __repr__(self):
@@ -159,7 +166,7 @@ class Grammar:
        
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.' + 
-                        '\nA backquoute ` represents an empty string')
+                        '\n \\e and ` denote an empty string')
 parser.add_argument("--verbose", '-v', action = 'store_true',
                     help='Enable verbose output')                    
 parser.add_argument("-T", nargs='+', required=True, 
@@ -174,4 +181,4 @@ parser.add_argument("-S", required=True,
 args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
-g.is_regular(verbose)
+print g.is_regular(verbose)
