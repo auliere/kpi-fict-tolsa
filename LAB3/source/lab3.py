@@ -303,8 +303,9 @@ class Automaton:
         Qd = []
         Fd = dict()
         names = dict()
-        P.append(H})
-        
+        for
+        P.append({self.H})
+            
     def __str__(self):
         return ("Automaton: " + 
             "\n\tH: " + str(self.H) +
