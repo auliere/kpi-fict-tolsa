@@ -300,7 +300,7 @@ class Automaton:
         N = filter((lambda s: not self.grammar.is_symbol(s)), "NMLKQVSPCZJTEIOX")
         backup = copy.deepcopy(self)
         P = []
-        Qd = []
+        Qd = set()
         Fd = dict()
         names = dict()
         for q in self.Q:
@@ -311,15 +311,26 @@ class Automaton:
             pd = P.pop(0)
             fpd = frozenset(pd)
             if(fpd not in names.keys()):
-                names[fpd] = N.pop()
+                if(fpd):
+                    names[fpd] = N[0]
+                    N = N[1:]
+                else:
+                    names[fpd] = ""
             D = names[fpd]
             for c in self.T:
                 qd = set()
                 for p in pd:
-                    if((p, c) in self.F.keys())
-                    qd |= {set(self.F[p, c]}
-            
-        print names
+                    if((p, c) in self.F.keys()):
+                        qd |= set(self.F[p, c])
+                    fqd = frozenset(qd)
+                    if(fqd in names.keys()):
+                        fqd = names[fqd]
+                    Fd[fpd, c] = fqd
+                if (qd not in Qd):
+                    P.append(qd)
+                    Qd.add(fqd)                
+        #print names
+        print Fd
     def __str__(self):
         return ("Automaton: " + 
             "\n\tH: " + str(self.H) +
