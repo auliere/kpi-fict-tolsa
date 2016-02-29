@@ -4,39 +4,44 @@ import copy
 import pprint
 import grammar
 
-graph = functools.partial(gv.Graph, format='svg')
-digraph = functools.partial(gv.Digraph, format='svg')
+class Digraph:
 
-def add_nodes(graph, nodes):
-    """
-    Adds nodes to a graph and returns a graph
-    Taken from http://goo.gl/TZ9dol
-    """
-    for n in nodes:
-        if isinstance(n, tuple):
-            graph.node(n[0], **n[1])
-        else:
-            graph.node(n)
-    return graph
+    def __init__(self):
+        self.g = gv.Digraph(format = "svg")
+        
+    def add_nodes(self, nodes):
+        """
+        Adds nodes to a graph and returns a graph
+        Taken from http://goo.gl/TZ9dol
+        """
+        for n in nodes:
+            if isinstance(n, tuple):
+                self.g.node(n[0], **n[1])
+            else:
+                self.g.node(n)
+        return self
 
-def add_edges(graph, edges):
-    """
-    Adds edges to a graph and returns a graph
-    Taken from http://goo.gl/TZ9dol
-    """
-    for e in edges:
-        if isinstance(e[0], tuple):
-            graph.edge(*e[0], **e[1])
-        else:
-            graph.edge(*e)
-    return graph
-
+    def add_edges(self, edges):
+        """
+        Adds edges to a graph and returns a graph
+        Taken from http://goo.gl/TZ9dol
+        """
+        for e in edges:
+            if isinstance(e[0], tuple):
+                self.g.edge(*e[0], **e[1])
+            else:
+                self.g.edge(*e)
+        return self
+    
+    def render(self, file):
+        self.g.render(file)        
     
 class Automaton:
     
     def __init__(self, grammar, verbose = False):
         self.base_grammar = grammar
         self.verbose = verbose
+        self.digraph = None
         if(grammar.is_regular()):
             self.grammar = grammar.to_rightRG()
             self.H = ""
@@ -136,8 +141,41 @@ class Automaton:
             print result
         return result
         
-    def draw(file)
+    def render(self, file):
+        if(self.digraph is None):
+            self.digraph = Digraph()
+        g = self.digraph;
+        g.add_nodes(
+            [
+                ('empty_node', {'style': 'invis'}),
+                (self.H, {'shape': 'circle'})
+            ]
+        ).add_edges(
+            [
+                ('empty_node', self.H)
+            ]
+        )
         
+        for n in self.Z:
+            g.add_nodes(
+                [
+                    (n, {"shape": "doublecircle"})
+                ]
+            )
+        for n in (self.Q - {self.H} - self.Z):
+            g.add_nodes(
+                [
+                    (n, {"shape": "circle"})
+                ]
+            )
+        tF=[((n1, n3), n2) for (n1, n2) in self.F.keys() for n3 in self.F[n1, n2]]
+        for e, lbl in tF:
+            g.add_edges(
+                [
+                    ( e, {'label': lbl})
+                ]
+            )        
+        g.render(file)
         
     def __str__(self):
         return ("Automaton: " + 

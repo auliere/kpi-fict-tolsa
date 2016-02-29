@@ -22,4 +22,6 @@ args = parser.parse_args()
 verbose = args.verbose
 g = grammar.Grammar(T = args.T, N = args.N, P = args.P, S = args.S, verbose = verbose)
 a = automaton.Automaton(g, verbose = verbose)
+a.render("test")
 a = a.build_dfa()
+a.render("test2")
