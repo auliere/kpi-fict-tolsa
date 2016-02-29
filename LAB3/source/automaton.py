@@ -147,8 +147,7 @@ class Automaton:
         
     def render(self, file):
         if(not self.broken):
-            if(self.digraph is None):
-                self.digraph = Digraph()
+            self.digraph = Digraph()
             g = self.digraph;
             g.add_nodes(
                 [
