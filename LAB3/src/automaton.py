@@ -3,6 +3,7 @@ import functools
 import copy
 import pprint
 import grammar
+import operator
 
 class Digraph:
 
@@ -193,4 +194,10 @@ class Automaton:
             "\n\tQ: " + str(self.Q) +
             "\n\tT: " + str(self.T) +
             "\n\tZ: " + str(self.Z) +
-            "\n\tF: " + str(self.F))
+            "\n\tF: " + 
+            functools.reduce(
+            lambda x, y: x+y,
+            map(lambda x: "\n\t\t" + x, pprint.pformat(self.F).split("\n"))        
+            )
+        )
+            
