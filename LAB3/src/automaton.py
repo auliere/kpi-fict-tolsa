@@ -185,6 +185,10 @@ class Automaton:
                     ]
                 )        
             g.render(file)
+    
+    def set_verbose(self, verbose):
+        self.verbose = verbose;
+        return self
         
     def __str__(self):
         if(self.broken):

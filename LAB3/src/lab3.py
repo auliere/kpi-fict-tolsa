@@ -41,7 +41,7 @@ if(args.non_deterministic_fsa):
         a.render(args.image_name)
         os.remove(args.image_name)
 if(args.deterministic_fsa):
-    a = automaton.Automaton(g, verbose).build_dfa()
+    a = automaton.Automaton(g).set_verbose(verbose).build_dfa()
     if(args.image_name):
         a.render(args.image_name)
         os.remove(args.image_name)
