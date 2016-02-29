@@ -136,6 +136,8 @@ class Automaton:
             print result
         return result
         
+    def draw(file)
+        
         
     def __str__(self):
         return ("Automaton: " + 
