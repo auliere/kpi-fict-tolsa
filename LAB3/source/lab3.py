@@ -244,7 +244,36 @@ class Grammar:
         Pns = Pns[:-1]
         return ("G = {" + Ts + ", " + Ns + ", " + 
             Ps + ", " + self.S + "}\n" + Pns)
+
+
     
+class Automaton:
+    
+    def __init__(self, grammar):
+        self.base_grammar = grammar
+        self.grammar = grammar.to_rightRG()
+        self.H = ""
+        self.Q = set()
+        self.T = set()
+        self.Z = set()
+        self.build_nfa()
+        
+    def build_nfa(self):
+        N = filter((lambda s: not self.grammar.is_symbol(s)), "NMLKQVSPCZJTEIOX")[0]
+        for nonterminal in self.base_grammar.N:
+            t_set = set()
+            nt_set = set()
+            for rule in self.grammar.P[nonterminal]:
+                n, t = self.grammar.decompose_rule(rule)
+                if(n is None):
+                    t_set |= {t}
+                else:
+                    nt_set |= {t}
+            t_set -= nt_set
+            for t in t_set:
+                self.grammar.create_rule(nonterminal, t, N) 
+        print self.grammar    
+            
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.' + 
                         '\n \\e and ` denote an empty string')
@@ -262,7 +291,5 @@ parser.add_argument("-S", required=True,
 args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
-g.is_regular(verbose)
-g2 = g.to_rightRG()
-g.create_rule("N", "a", "B")
-print g
+a = Automaton(g)
+a.build_nfa()
