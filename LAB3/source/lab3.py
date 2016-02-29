@@ -255,6 +255,7 @@ class Automaton:
         self.H = ""
         self.Q = set()
         self.T = set()
+        self.F = dict()
         self.Z = set()
         self.build_nfa()
         
@@ -271,8 +272,32 @@ class Automaton:
                     nt_set |= {t}
             t_set -= nt_set
             for t in t_set:
-                self.grammar.create_rule(nonterminal, t, N) 
-        print self.grammar    
+                self.grammar.create_rule(nonterminal, t, N)
+        self.H = self.grammar.S
+        self.Q = self.grammar.N
+        self.T = self.grammar.T
+        for left in self.grammar.N:
+            t_set = set()
+            nt_set = set()            
+            if(left in self.grammar.P.keys()):
+                for rule in self.grammar.P[left]:                
+                    n, t = self.grammar.decompose_rule(rule)
+                    if(n is not None):
+                        self.F[left, t] = n
+                        nt_set |= {t}                
+                    if(n is None):
+                        t_set |= {t}
+                for t in (t_set & nt_set):
+                    self.Z |= {self.F[left, t]}
+        return self
+        
+    def __str__(self):
+        return ("Automaton: " + 
+            "\n\tH: " + str(self.H) +
+            "\n\tQ: " + str(self.Q) +
+            "\n\tT: " + str(self.T) +
+            "\n\tZ: " + str(self.Z) +
+            "\n\tF: " + str(self.F))
             
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.' + 
@@ -292,4 +317,4 @@ args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
 a = Automaton(g)
-a.build_nfa()
+print a
