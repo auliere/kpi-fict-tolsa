@@ -3,6 +3,7 @@ import graphviz as gv
 import functools
 import argparse
 import copy
+import pprint
 
 graph = functools.partial(gv.Graph, format='svg')
 digraph = functools.partial(gv.Digraph, format='svg')
@@ -306,7 +307,8 @@ class Automaton:
         for q in self.Q:
             fq = frozenset(q)
             names[fq] = q
-        P.append({self.H})        
+        P.append({self.H})  
+        Qd.add(frozenset(P[0]))
         while (len(P) > 0):            
             pd = P.pop(0)
             fpd = frozenset(pd)
@@ -323,14 +325,31 @@ class Automaton:
                     if((p, c) in self.F.keys()):
                         qd |= set(self.F[p, c])
                     fqd = frozenset(qd)
-                    if(fqd in names.keys()):
-                        fqd = names[fqd]
-                    Fd[fpd, c] = fqd
+                    Fd[D, c] = fqd
                 if (qd not in Qd):
                     P.append(qd)
-                    Qd.add(fqd)                
-        #print names
-        print Fd
+                    Qd.add(fqd) 
+        nQ = set()
+        nF = dict()
+        nZ = set()       
+        for q in Qd:
+            D = names[q]
+            if(len(D) > 0):
+                nQ.add(D)
+                if(self.Z & q):
+                    nZ |= {D}
+        for n, t in [(x, y) for x in nQ for y in self.T]:
+            if(Fd[n, t]):
+                nF.setdefault((n, t), [])
+                nF[n, t].append(names[Fd[n, t]])
+        self.F = nF
+        self.Z = nZ
+        self.Q = nQ
+        result = copy.deepcopy(self)
+        self = backup
+        return result
+        
+        
     def __str__(self):
         return ("Automaton: " + 
             "\n\tH: " + str(self.H) +
@@ -361,4 +380,4 @@ a = Automaton(g)
 print a
 print g
 
-a.build_dfa()
+print a.build_dfa()
