@@ -303,9 +303,23 @@ class Automaton:
         Qd = []
         Fd = dict()
         names = dict()
-        for
-        P.append({self.H})
+        for q in self.Q:
+            fq = frozenset(q)
+            names[fq] = q
+        P.append({self.H})        
+        while (len(P) > 0):            
+            pd = P.pop(0)
+            fpd = frozenset(pd)
+            if(fpd not in names.keys()):
+                names[fpd] = N.pop()
+            D = names[fpd]
+            for c in self.T:
+                qd = set()
+                for p in pd:
+                    if((p, c) in self.F.keys())
+                    qd |= {set(self.F[p, c]}
             
+        print names
     def __str__(self):
         return ("Automaton: " + 
             "\n\tH: " + str(self.H) +
