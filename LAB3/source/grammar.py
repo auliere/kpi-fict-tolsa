@@ -199,7 +199,7 @@ class Grammar:
             print reason[:-1]
         return regular
     
-    def __repr__(self):
+    def __str__(self):
         Ts = '('
         for item in self.T:
             Ts += item + ', '
