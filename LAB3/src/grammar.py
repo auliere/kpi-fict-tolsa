@@ -191,10 +191,10 @@ class Grammar:
             if not regular:
                 break
         if regular and verbose:
-            print (str(self) + "\nThe above grammar is a " + 
+            print "\nThe grammar is a " + 
                 self.type + " regular grammar") 
         if not regular and verbose:
-            print str(self) + "\nThe above grammar is not a regular grammar"
+            print "\nThe above grammar is not a regular grammar"
             print wrong_rule 
             print reason[:-1]
         
