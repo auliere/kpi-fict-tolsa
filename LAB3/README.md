@@ -1,10 +1,10 @@
 # Lab3. Building a finite automaton for a regular grammar
 ## Intention
-The program lab3.py accepts a formal grammar via command line arguments,
+The program `lab3.py` accepts a formal grammar via command line arguments,
 checks the grammar for regularity and, if needed, builds either a
 non-deterministic finite automaton or a 
 non-deterministic finite automaton for that grammar. There is an option to 
-save the graph of the automaton as a *.svg image
+save the graph of the automaton as a `*.svg` image
 
 ## Dependencies
 The program is written in Python 2.7 and uses a graphviz library for python 
