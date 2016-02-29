@@ -1,3 +1,4 @@
+#TODO: write some meaningful comments
 import graphviz as gv
 import functools
 import argparse
@@ -56,6 +57,7 @@ def parse_rules(rules):
     
 class Grammar:
     """Class that holds a grammar"""
+    #TODO: Add more error handling
     def __init__(self, T, N, P, S):
         self.T = set(T)
         if "\\e" in self.T:
@@ -65,6 +67,9 @@ class Grammar:
         self.P = parse_rules(P)
         self.S = S 
         self.type = "undefined"
+        
+    def is_symbol(self, letter):
+        return self.is_terminal(letter) or self.is_nonterminal(letter)
         
     def is_terminal(self, letter):
         return letter in self.T
@@ -80,8 +85,28 @@ class Grammar:
     def is_leftRG(self, line):
         return (self.is_terminal(line[1]) and 
                 self.is_nonterminal(line[0]) and 
-                len(line) == 2)    
-                
+                len(line) == 2)
+    
+    def add_terminal(self, t):
+        if (not self.is_nonterminal(t)):
+            self.T |= {t}        
+
+    def add_nonterminal(self, n):
+        if (not self.is_terminal(n)):
+            self.N |= {n}
+    
+    def decompose_rule(self, line):
+        """
+        Returns a tuple: (non-terminal, terminal)
+        """
+        if(len(line) == 1):
+            return None, line
+        else:
+            if(self.type == "right"):
+                return line[1], line[0]
+            else:
+                return line[0], line[1]
+            
     def add_rule(self, left, right):
     #TODO: Use exceptions instead of returning bool
         if ((self.type == "undefined") or
@@ -89,15 +114,49 @@ class Grammar:
             return False
         if((len(right) == 1)):
             if (self.is_terminal(right)):
+                self.P.setdefault(left, [])
                 self.P[left].append(right)
                 return True
             else:
                 return False
         if (not ((self.type == 'right' and self.is_rightRG(right)) or
             (self.type == 'left' and self.is_leftRG(right)))):
-            return False      
+            return False
+        self.P.setdefault(left, [])
         self.P[left].append(right)
         return True
+
+    def create_rule(self, nl, t, nr):
+        left = nl
+        if self.type == "left":
+            right = nr+t
+        else:
+            right = t+nr
+        self.add_terminal(t)
+        self.add_nonterminal(nl)
+        self.add_nonterminal(nr)
+        return self.add_rule(left, right)  
+    
+    def to_rightRG(self):
+        if(self.type == "right"):
+            return copy.deepcopy(self)
+        rRG = copy.deepcopy(self);
+        rRG = Grammar(T=rRG.T, N=rRG.N, P=dict(), S=rRG.S)
+        rRG.type = "right"
+        for left in self.N:
+            for right in self.P[left]:
+                n, t = self.decompose_rule(right)
+                if(left == self.S):
+                    if(n is None):
+                        rRG.add_rule(left, right)
+                    else:
+                        rRG.add_rule(n, t)
+                else:
+                    if(n is None):
+                        rRG.create_rule(rRG.S, t, left)
+                    else:
+                        rRG.create_rule(n, t, left)
+        return rRG                        
     
     def is_regular(self, verbose=False):
         """
@@ -183,9 +242,9 @@ class Grammar:
             Pns += "\tP" + str(i) + " = " + key + " -> " + R + ';\n'
             i = i+1
         Pns = Pns[:-1]
-        return "G = {" + Ts + ", " + Ns + ", " + Ps + ", " + self.S + "}\n" + Pns
+        return ("G = {" + Ts + ", " + Ns + ", " + 
+            Ps + ", " + self.S + "}\n" + Pns)
     
-       
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.' + 
                         '\n \\e and ` denote an empty string')
@@ -203,8 +262,7 @@ parser.add_argument("-S", required=True,
 args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
-g.is_regular(False)
-g2 = copy.deepcopy(g)
-g2.add_rule("S", "b")
+g.is_regular(verbose)
+g2 = g.to_rightRG()
+g.create_rule("N", "a", "B")
 print g
-print g2
