@@ -136,6 +136,9 @@ class Grammar:
         self.add_nonterminal(nl)
         self.add_nonterminal(nr)
         return self.add_rule(left, right)  
+        
+    def remove_rule(self, left, right):
+        self.P[left].remove(right)
     
     def to_rightRG(self):
         if(self.type == "right"):
@@ -268,11 +271,11 @@ class Automaton:
                 n, t = self.grammar.decompose_rule(rule)
                 if(n is None):
                     t_set |= {t}
+                    self.grammar.remove_rule(nonterminal, rule)
                 else:
                     nt_set |= {t}
-            t_set -= nt_set
             for t in t_set:
-                self.grammar.create_rule(nonterminal, t, N)
+                self.grammar.create_rule(nonterminal, t, N)                
         self.H = self.grammar.S
         self.Q = self.grammar.N
         self.T = self.grammar.T
@@ -283,12 +286,12 @@ class Automaton:
                 for rule in self.grammar.P[left]:                
                     n, t = self.grammar.decompose_rule(rule)
                     if(n is not None):
-                        self.F[left, t] = n
+                        self.F.setdefault((left, t), [])
+                        self.F[left, t].append(n)
                         nt_set |= {t}                
                     if(n is None):
                         t_set |= {t}
-                for t in (t_set & nt_set):
-                    self.Z |= {self.F[left, t]}
+        self.Z |= {N}
         return self
         
     def __str__(self):
