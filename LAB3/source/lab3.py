@@ -32,27 +32,7 @@ def add_edges(graph, edges):
             graph.edge(*e)
     return graph
 	
-def parse_rule(rule):
-    """
-    Parse a grammar rule and return a tuple: 
-    a starting symbol and a list of end symbols
-    """
-    rule = "".join(rule.split())
-    rule = rule.replace("||", "|"+empty_string)
-    L, R = rule.split('->') 
-    return L, R.split('|')
-	
-def parse_rules(rules):
-    """
-    Parse a list of grammar rules.
-    Return a dictionary with start symbol as a key
-    and list of produced symbols as value.
-    """
-    rules_dict = {}
-    for rule in rules:
-        L, R = parse_rule(rule)
-        rules_dict[L] = R
-    return rules_dict
+
 
     
 class Grammar:
@@ -64,9 +44,31 @@ class Grammar:
             self.T -= {"\\e"}
             self.T |= {"`"}
         self.N = set(N)
-        self.P = parse_rules(P)
+        self.P = self.parse_rules(P)
         self.S = S 
         self.type = "undefined"
+        
+    def parse_rule(self, rule):
+        """
+        Parse a grammar rule and return a tuple: 
+        a starting symbol and a list of end symbols
+        """
+        rule = "".join(rule.split())
+        rule = rule.replace("||", "|"+empty_string)
+        L, R = rule.split('->') 
+        return L, R.split('|')
+        
+    def parse_rules(self, rules):
+        """
+        Parse a list of grammar rules.
+        Return a dictionary with start symbol as a key
+        and list of produced symbols as value.
+        """
+        rules_dict = {}
+        for rule in rules:
+            L, R = self.parse_rule(rule)
+            rules_dict[L] = R
+        return rules_dict
         
     def is_symbol(self, letter):
         return self.is_terminal(letter) or self.is_nonterminal(letter)
@@ -294,6 +296,15 @@ class Automaton:
         self.Z |= {N}
         return self
         
+    def build_dfa(self):
+        N = filter((lambda s: not self.grammar.is_symbol(s)), "NMLKQVSPCZJTEIOX")
+        backup = copy.deepcopy(self)
+        P = []
+        Qd = []
+        Fd = dict()
+        names = dict()
+        P.append(H})
+        
     def __str__(self):
         return ("Automaton: " + 
             "\n\tH: " + str(self.H) +
@@ -320,4 +331,8 @@ args = parser.parse_args()
 verbose = args.verbose
 g = Grammar(T = args.T, N = args.N, P = args.P, S = args.S)
 a = Automaton(g)
+
 print a
+print g
+
+a.build_dfa()
