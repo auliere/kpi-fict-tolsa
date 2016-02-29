@@ -14,10 +14,10 @@ class Grammar:
         self.N = set(N)
         self.P = self.parse_rules(P)
         self.verbose = verbose;
-        if(verbose):
-            print self.P
         self.S = S 
         self.type = "undefined"
+        if(verbose):
+            print self        
         
     def parse_rule(self, rule):
         """
@@ -192,11 +192,12 @@ class Grammar:
                 break
         if regular and verbose:
             print (str(self) + "\nThe above grammar is a " + 
-                self.type + " regular grammar")
+                self.type + " regular grammar") 
         if not regular and verbose:
             print str(self) + "\nThe above grammar is not a regular grammar"
             print wrong_rule 
             print reason[:-1]
+        
         return regular
     
     def __str__(self):
@@ -221,3 +222,5 @@ class Grammar:
         Pns = Pns[:-1]
         return ("G = {" + Ts + ", " + Ns + ", " + 
             Ps + ", " + self.S + "}\n" + Pns)
+
+        

@@ -3,6 +3,7 @@
 import grammar
 import automaton
 import argparse
+import os
 
 parser = argparse.ArgumentParser(
                     description = 'Build an automaton for regular grammar.' + 
@@ -17,7 +18,15 @@ parser.add_argument("-P", nargs='+', required=True,
                     help='Rules of production for grammar')
 parser.add_argument("-S", required=True,
                     help='Starting symbol of a grammar')
-
+group2 = parser.add_argument_group()
+group = group2.add_mutually_exclusive_group()
+group.add_argument("--non-deterministic-fsa", '-nfa', action = 'store_true',
+                    help='Build a non-deterministic finite state automaton')
+group.add_argument("--deterministic-fsa", '-dfa', action = 'store_true',
+                    help='Build a deterministic finite state automaton')
+group2.add_argument("--image-name", '-i',
+                    help="Specify the name of the graph (*.svg) output file.")
+                    
 args = parser.parse_args()
 verbose = args.verbose
 g = grammar.Grammar(
@@ -26,7 +35,15 @@ g = grammar.Grammar(
     P = args.P, 
     S = args.S, 
     verbose = verbose)
-a = automaton.Automaton(g, verbose = verbose)
-a.render("test")
-a = a.build_dfa()
-a.render("test2")
+if(args.non_deterministic_fsa):
+    a = automaton.Automaton(g, verbose)
+    if(args.image_name):
+        a.render(args.image_name)
+        os.remove(args.image_name)
+if(args.deterministic_fsa):
+    a = automaton.Automaton(g, verbose).build_dfa()
+    if(args.image_name):
+        a.render(args.image_name)
+        os.remove(args.image_name)
+
+    
