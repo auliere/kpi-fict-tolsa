@@ -2,7 +2,7 @@
 ## Intention
 The program `lab3.py` accepts a formal grammar via command line arguments,
 checks the grammar for regularity and, if needed, builds either a
-non-deterministic finite automaton or a 
+deterministic finite automaton or a 
 non-deterministic finite automaton for that grammar. There is an option to 
 save the graph of the automaton as a `*.svg` image
 
