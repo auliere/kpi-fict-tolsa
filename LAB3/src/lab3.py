@@ -35,6 +35,7 @@ g = grammar.Grammar(
     P = args.P, 
     S = args.S, 
     verbose = verbose)
+print "Grammar, ", g.T
 if(args.non_deterministic_fsa):
     a = automaton.Automaton(g, verbose)
     if(args.image_name):

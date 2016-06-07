@@ -7,10 +7,11 @@ class Grammar:
     """Class that holds a grammar"""
     #TODO: Add more error handling
     def __init__(self, T, N, P, S, verbose = False):
-        self.T = set(T)
+        self.T = set(T)        
         if "\\e" in self.T:
             self.T -= {"\\e"}
             self.T |= {"`"}
+            print self.T
         self.N = set(N)
         self.P = self.parse_rules(P)
         self.verbose = verbose;
@@ -26,6 +27,8 @@ class Grammar:
         """
         rule = "".join(rule.split())
         rule = rule.replace("||", "|"+empty_string)
+        if (rule == "|"+empty_string):
+            rule = empty_string
         L, R = rule.split('->') 
         return L, R.split('|')
         
